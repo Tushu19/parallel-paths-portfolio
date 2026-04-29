@@ -1,8 +1,9 @@
 import { motion } from "framer-motion";
-import { Grid3x3, Sparkles } from "lucide-react";
+import { Grid3x3, Sparkles, Github, Linkedin, MapPin } from "lucide-react";
 import { Portal } from "./Portal";
 import { universes } from "@/data/universes";
 import type { UniverseId } from "@/data/universes";
+import avatarImg from "@/assets/avatar.png";
 
 interface Props {
   onEnter: (id: UniverseId) => void;
@@ -43,23 +44,66 @@ export const PortalHub = ({ onEnter, onMerge, onQuickView }: Props) => {
       </header>
 
       {/* Hero */}
-      <section className="container mx-auto px-4 sm:px-6 pt-14 sm:pt-20 pb-10 text-center">
+      <section className="container mx-auto px-4 sm:px-6 pt-12 sm:pt-16 pb-10 text-center">
+        {/* Animated cosmic avatar */}
+        <motion.div
+          initial={{ opacity: 0, scale: 0.6, rotate: -30 }}
+          animate={{ opacity: 1, scale: 1, rotate: 0 }}
+          transition={{ duration: 1, ease: [0.16, 1, 0.3, 1] }}
+          className="relative mx-auto mb-8 w-36 h-36 sm:w-44 sm:h-44"
+        >
+          {/* Orbiting rings */}
+          <div className="absolute inset-[-18px] rounded-full border border-universe/30 animate-portal-spin" />
+          <div className="absolute inset-[-32px] rounded-full border border-dashed border-universe-glow/25"
+            style={{ animation: "portal-spin 40s linear infinite reverse" }} />
+          {/* Glow halo */}
+          <div className="absolute inset-0 rounded-full blur-2xl opacity-60 animate-glow-pulse"
+            style={{ background: "radial-gradient(circle, hsl(var(--universe-primary-glow) / 0.6), transparent 70%)" }} />
+          {/* Avatar image */}
+          <img
+            src={avatarImg}
+            alt="Tushar Gahlot — Cosmic avatar emblem"
+            width={176}
+            height={176}
+            className="relative w-full h-full object-contain animate-float-slow drop-shadow-[0_0_30px_hsl(var(--universe-primary-glow)/0.6)]"
+          />
+        </motion.div>
+
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8 }}
+          transition={{ duration: 0.8, delay: 0.2 }}
         >
-          <p className="font-mono text-xs uppercase tracking-[0.4em] text-universe-glow mb-5">
-            Choose your reality
+          <p className="font-mono text-xs uppercase tracking-[0.4em] text-universe-glow mb-4">
+            Transmission · 2026 · Bangalore
           </p>
-          <h1 className="font-display text-5xl sm:text-7xl md:text-8xl font-black mb-6 leading-[0.95]">
-            <span className="text-cosmic">Four Universes.</span><br />
-            <span className="text-foreground">One Engineer.</span>
+          <h1 className="font-display text-5xl sm:text-7xl md:text-8xl font-black mb-3 leading-[0.95]">
+            <span className="text-cosmic">Tushar Gahlot</span>
           </h1>
-          <p className="max-w-2xl mx-auto text-base sm:text-lg text-muted-foreground leading-relaxed">
-            Every portal opens a different version of me — Backend, AI, Cloud, Full-Stack.
-            Same achievements, distilled through the lens of each reality.
+          <p className="font-display text-lg sm:text-2xl font-semibold text-foreground/90 mb-2 tracking-wide">
+            Software Engineer · <span className="text-universe-glow">Multi-Verse Builder</span>
           </p>
+          <p className="font-mono text-[11px] sm:text-xs uppercase tracking-[0.25em] text-muted-foreground mb-6">
+            AI · Backend · Cloud · Full-Stack
+          </p>
+
+          <h2 className="font-display text-3xl sm:text-5xl font-black mb-5 leading-[0.95]">
+            <span className="text-foreground">Four Universes. </span>
+            <span className="text-cosmic">One Engineer.</span>
+          </h2>
+          <p className="max-w-2xl mx-auto text-base sm:text-lg text-muted-foreground leading-relaxed mb-6">
+            From GPT-4o verification engines that cut 750 hours/month, to multi-tenant SaaS on SAP BTP —
+            every portal opens a different reality of the same engineer.
+          </p>
+
+          <div className="flex flex-wrap items-center justify-center gap-2 sm:gap-3 text-xs font-mono">
+            <span className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full glass">
+              <MapPin className="w-3 h-3 text-universe-glow" /> SAP Labs · Bangalore
+            </span>
+            <span className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full glass">
+              <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" /> Open to opportunities
+            </span>
+          </div>
         </motion.div>
       </section>
 

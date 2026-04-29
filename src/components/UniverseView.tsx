@@ -1,6 +1,7 @@
 import { motion } from "framer-motion";
 import { ArrowLeft, Sparkles } from "lucide-react";
 import { ParticleField } from "./ParticleField";
+import { SkillConstellation } from "./SkillConstellation";
 import { projects, type Universe } from "@/data/universes";
 
 interface Props {
@@ -90,20 +91,10 @@ export const UniverseView = ({ universe, onBack }: Props) => {
         {/* Skills constellation */}
         <section className="mb-20">
           <SectionTitle>Skill Constellation</SectionTitle>
-          <div className="flex flex-wrap gap-2.5 justify-center">
-            {universe.skills.map((s, i) => (
-              <motion.span
-                key={s}
-                initial={{ opacity: 0, scale: 0.6 }}
-                animate={{ opacity: 1, scale: 1 }}
-                transition={{ delay: 0.2 + i * 0.04, type: "spring", stiffness: 200 }}
-                className="px-4 py-2 rounded-full glass text-sm font-mono hover:scale-110 hover:glow-border transition-all duration-300 cursor-default"
-                style={{ animation: `float-slow ${4 + (i % 3)}s ease-in-out infinite`, animationDelay: `${i * 0.1}s` }}
-              >
-                {s}
-              </motion.span>
-            ))}
-          </div>
+          <SkillConstellation skills={universe.skills} />
+          <p className="text-center text-[11px] font-mono text-muted-foreground mt-3 uppercase tracking-widest">
+            Hover a star to brighten its connections
+          </p>
         </section>
 
         {/* Relevant Projects */}
