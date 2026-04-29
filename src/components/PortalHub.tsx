@@ -33,7 +33,7 @@ export const PortalHub = ({ onEnter, onMerge, onQuickView }: Props) => {
         <div className="flex items-center gap-2">
           <div className="w-2 h-2 rounded-full bg-universe-glow animate-pulse" />
           <span className="font-mono text-[10px] sm:text-xs uppercase tracking-[0.3em] text-muted-foreground">
-            Multi-Verse Portfolio · v1.0
+            Welcome, Explorer · Choose Your Path
           </span>
         </div>
         <button
