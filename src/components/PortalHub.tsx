@@ -1,6 +1,7 @@
 import { motion } from "framer-motion";
 import { Grid3x3, Sparkles, Github, Linkedin, MapPin } from "lucide-react";
 import { Portal } from "./Portal";
+import { ContactSection } from "./ContactSection";
 import { universes } from "@/data/universes";
 import type { UniverseId } from "@/data/universes";
 import avatarImg from "@/assets/avatar.png";
