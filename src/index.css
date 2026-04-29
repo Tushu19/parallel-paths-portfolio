@@ -4,6 +4,24 @@
 
 @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;600;700;800;900&family=Space+Grotesk:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap');
 
+
+/* Custom Spaceship Cursor */
+* {
+  cursor: url('/parallel-paths-portfolio/cursor-idle.svg') 16 16, auto;
+}
+
+/* Active cursor on interactive elements */
+a, button, [role="button"], input[type="submit"], input[type="button"],
+select, [onclick], .cursor-pointer {
+  cursor: url('/parallel-paths-portfolio/cursor-active.svg') 16 16, pointer;
+}
+
+/* Text selection cursor */
+input[type="text"], input[type="email"], input[type="search"],
+textarea, [contenteditable="true"] {
+  cursor: url('/parallel-paths-portfolio/cursor-idle.svg') 16 16, text;
+}
+
 /* The Multi-Verse Portfolio — Sci-fi Portal Design System
    All colors HSL. All universes themed via tokens. */
 

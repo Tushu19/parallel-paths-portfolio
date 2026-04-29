@@ -1,0 +1,31 @@
+<svg width="32" height="32" viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="shipGradActive" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#a78bfa;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#60a5fa;stop-opacity:1" />
+    </linearGradient>
+    <filter id="glowActive">
+      <feGaussianBlur stdDeviation="1.5" result="coloredBlur"/>
+      <feMerge>
+        <feMergeNode in="coloredBlur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+  </defs>
+  <!-- Spaceship body -->
+  <path d="M16 4 L20 12 L18 12 L18 20 L14 20 L14 12 L12 12 Z" fill="url(#shipGradActive)" filter="url(#glowActive)" stroke="#fff" stroke-width="0.5"/>
+  <!-- Cockpit window -->
+  <circle cx="16" cy="10" r="1.5" fill="#60a5fa" opacity="0.9"/>
+  <!-- Large active thrust flame -->
+  <ellipse cx="16" cy="22" rx="3" ry="6" fill="#fbbf24" opacity="0.8">
+    <animate attributeName="opacity" values="0.8;1;0.8" dur="0.3s" repeatCount="indefinite"/>
+    <animate attributeName="ry" values="6;7;6" dur="0.3s" repeatCount="indefinite"/>
+  </ellipse>
+  <ellipse cx="16" cy="23" rx="2" ry="4" fill="#f97316" opacity="0.9">
+    <animate attributeName="opacity" values="0.9;1;0.9" dur="0.3s" repeatCount="indefinite"/>
+  </ellipse>
+  <!-- Inner core -->
+  <ellipse cx="16" cy="22" rx="1.5" ry="3" fill="#fef3c7" opacity="1">
+    <animate attributeName="opacity" values="1;0.8;1" dur="0.2s" repeatCount="indefinite"/>
+  </ellipse>
+</svg>
