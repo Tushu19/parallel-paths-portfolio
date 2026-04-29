@@ -6,7 +6,7 @@
 
 /* Custom Spaceship Cursor */
 * {
-  cursor: url('/parallel-paths-portfolio/cursor-idle.svg') 20 20, auto;
+  cursor: url('/parallel-paths-portfolio/rocket-cursor.png') 20 20, auto;
 }
 
 /* Active cursor on interactive elements */
@@ -14,12 +14,12 @@
 
 a, button, [role="button"], input[type="submit"], input[type="button"],
 select, [onclick], .cursor-pointer {
-  cursor: url('/parallel-paths-portfolio/cursor-active.svg') 20 25, pointer;
+  cursor: url('/parallel-paths-portfolio/rocket-cursor.png') 20 25, pointer;
 }
 
 input[type="text"], input[type="email"], input[type="search"],
 textarea, [contenteditable="true"] {
-  cursor: url('/parallel-paths-portfolio/cursor-idle.svg') 20 20, text;
+  cursor: url('/parallel-paths-portfolio/rocket-cursor.png') 20 20, text;
 }
 
 
