@@ -82,7 +82,7 @@ export const Portal = ({ universe, onEnter, index }: Props) => {
           {universe.name}
         </h3>
         <p className="text-xs text-muted-foreground mt-1 font-mono">{universe.tagline}</p>
-        <div className="mt-3 inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full glass-strong text-[10px] font-mono uppercase tracking-wider opacity-70 group-hover:opacity-100 transition-opacity">
+        <div className="mt-3 inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full glass-strong text-[10px] font-mono uppercase tracking-wider opacity-70 group-hover:opacity-100 transition-opacity duration-200">
           <span className="w-1.5 h-1.5 rounded-full bg-universe-glow animate-pulse" />
           Click to Explore
         </div>
