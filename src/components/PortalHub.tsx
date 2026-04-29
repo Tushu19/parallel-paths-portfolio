@@ -104,6 +104,30 @@ export const PortalHub = ({ onEnter, onMerge, onQuickView }: Props) => {
             <span className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full glass">
               <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" /> Open to opportunities
             </span>
+            <a
+              href="https://www.linkedin.com/in/tush19/"
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label="LinkedIn — in/tush19"
+              className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full glass hover:glow-border transition-all"
+            >
+              <Linkedin className="w-3 h-3 text-universe-glow" /> LinkedIn
+            </a>
+            <a
+              href="https://github.com/tushu19"
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label="GitHub — tushu19"
+              className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full glass hover:glow-border transition-all"
+            >
+              <Github className="w-3 h-3 text-universe-glow" /> GitHub
+            </a>
+            <a
+              href="#contact"
+              className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full glass hover:glow-border transition-all"
+            >
+              <span className="w-1.5 h-1.5 rounded-full bg-universe-glow" /> Contact
+            </a>
           </div>
         </motion.div>
       </section>
