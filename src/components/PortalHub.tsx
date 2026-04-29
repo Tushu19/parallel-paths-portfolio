@@ -1,6 +1,7 @@
 import { motion } from "framer-motion";
 import { Grid3x3, Sparkles, Github, Linkedin, MapPin } from "lucide-react";
 import { Portal } from "./Portal";
+import { ContactSection } from "./ContactSection";
 import { universes } from "@/data/universes";
 import type { UniverseId } from "@/data/universes";
 import avatarImg from "@/assets/avatar.png";
@@ -103,6 +104,30 @@ export const PortalHub = ({ onEnter, onMerge, onQuickView }: Props) => {
             <span className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full glass">
               <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" /> Open to opportunities
             </span>
+            <a
+              href="https://www.linkedin.com/in/tush19/"
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label="LinkedIn — in/tush19"
+              className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full glass hover:glow-border transition-all"
+            >
+              <Linkedin className="w-3 h-3 text-universe-glow" /> LinkedIn
+            </a>
+            <a
+              href="https://github.com/tushu19"
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label="GitHub — tushu19"
+              className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full glass hover:glow-border transition-all"
+            >
+              <Github className="w-3 h-3 text-universe-glow" /> GitHub
+            </a>
+            <a
+              href="#contact"
+              className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full glass hover:glow-border transition-all"
+            >
+              <span className="w-1.5 h-1.5 rounded-full bg-universe-glow" /> Contact
+            </a>
           </div>
         </motion.div>
       </section>
@@ -144,9 +169,11 @@ export const PortalHub = ({ onEnter, onMerge, onQuickView }: Props) => {
         </button>
       </section>
 
+      <ContactSection />
+
       <footer className="container mx-auto px-4 sm:px-6 py-8 text-center">
         <p className="font-mono text-[10px] uppercase tracking-[0.3em] text-muted-foreground">
-          SAP Labs · Software Engineer · Bangalore
+          SAP Labs · Software Engineer · Bangalore · © {new Date().getFullYear()} Tushar Gahlot
         </p>
       </footer>
     </div>
