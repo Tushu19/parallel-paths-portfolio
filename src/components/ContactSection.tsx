@@ -11,7 +11,7 @@ const GITHUB = "https://github.com/tushu19";
 const MAILTO = `mailto:${EMAIL}?subject=${encodeURIComponent(
   "Opportunity for Tushar — [Role / Company]"
 )}&body=${encodeURIComponent(
-  `Hi Tushar,\n\nI came across your Multi-Verse Portfolio and would love to connect about an opportunity.\n\nRole: \nCompany: \nLocation / Remote: \nA bit about the role: \n\nWhen are you available for a quick call?\n\nThanks,\n`
+  `Hi Tushar,\n\nI came across your Portfolio and would love to connect about an opportunity.\n\nRole: \nCompany: \nLocation / Remote: \nA bit about the role: \n\nWhen are you available for a quick call?\n\nThanks,\n`
 )}`;
 
 export const ContactSection = () => {
