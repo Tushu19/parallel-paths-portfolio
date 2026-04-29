@@ -169,9 +169,11 @@ export const PortalHub = ({ onEnter, onMerge, onQuickView }: Props) => {
         </button>
       </section>
 
+      <ContactSection />
+
       <footer className="container mx-auto px-4 sm:px-6 py-8 text-center">
         <p className="font-mono text-[10px] uppercase tracking-[0.3em] text-muted-foreground">
-          SAP Labs · Software Engineer · Bangalore
+          SAP Labs · Software Engineer · Bangalore · © {new Date().getFullYear()} Tushar Gahlot
         </p>
       </footer>
     </div>
