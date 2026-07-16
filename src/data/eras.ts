@@ -23,7 +23,7 @@ export const eras: Era[] = [
   },
   {
     id: "ascent",
-    year: "2023",
+    year: "2022",
     label: "Ascent",
     title: "Enter SAP Labs",
     blurb:
@@ -32,6 +32,7 @@ export const eras: Era[] = [
       "Owned multi-tenant recommendation engine on SAP Asset Performance Management.",
       "Built 20+ REST endpoints, OData v4 across 50+ services, i18n for 17 languages.",
       "Battle-tested Spring Boot, Kafka, SAP HANA, OAuth2/JWT in production.",
+      "M.Tech in Computer Science — deep dive into software architecture.",
     ],
   },
   {
