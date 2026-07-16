@@ -8,11 +8,10 @@ export default {
     container: { center: true, padding: "2rem", screens: { "2xl": "1400px" } },
     extend: {
       fontFamily: {
-        display: ["Sora", "system-ui", "sans-serif"],
-        sora: ["Sora", "system-ui", "sans-serif"],
-        manrope: ["Manrope", "system-ui", "sans-serif"],
-        sans: ["Manrope", "system-ui", "sans-serif"],
-        mono: ["JetBrains Mono", "monospace"],
+        display: ["'Instrument Serif'", "Times New Roman", "serif"],
+        serif: ["'Instrument Serif'", "Times New Roman", "serif"],
+        sans: ["Inter", "system-ui", "sans-serif"],
+        mono: ["'JetBrains Mono'", "monospace"],
       },
       colors: {
         border: "hsl(var(--border))",
@@ -49,25 +48,11 @@ export default {
           DEFAULT: "hsl(var(--card))",
           foreground: "hsl(var(--card-foreground))",
         },
-        universe: {
-          DEFAULT: "hsl(var(--universe-primary))",
-          glow: "hsl(var(--universe-primary-glow))",
-          secondary: "hsl(var(--universe-secondary))",
-        },
       },
       borderRadius: {
         lg: "var(--radius)",
         md: "calc(var(--radius) - 2px)",
         sm: "calc(var(--radius) - 4px)",
-      },
-      backgroundImage: {
-        "gradient-portal": "var(--gradient-portal)",
-        "gradient-cosmic": "var(--gradient-cosmic)",
-      },
-      boxShadow: {
-        portal: "var(--shadow-portal)",
-        glow: "var(--shadow-glow)",
-        cardx: "var(--shadow-card)",
       },
       keyframes: {
         "accordion-down": { from: { height: "0" }, to: { height: "var(--radix-accordion-content-height)" } },
