@@ -134,7 +134,7 @@ export const PortalHub = ({ onEnter, onMerge, onQuickView }: Props) => {
 
       {/* Portals */}
       <section className="container mx-auto px-4 sm:px-6 flex-1">
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-2 sm:gap-4 max-w-6xl mx-auto">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-5 max-w-5xl mx-auto">
           {universes.map((u, i) => (
             <Portal key={u.id} universe={u} onEnter={onEnter} index={i} />
           ))}
