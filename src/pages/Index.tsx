@@ -1,10 +1,14 @@
 import { useEffect, useState } from "react";
-import { ArrowUpRight, Copy, Check, Github, Linkedin, Mail, MapPin, Phone } from "lucide-react";
+import { ArrowUpRight, Github, Linkedin, Mail, MapPin } from "lucide-react";
+import { motion, AnimatePresence } from "framer-motion";
 import { projects, coreStats, universes } from "@/data/universes";
+import { BentoCard } from "@/components/BentoCard";
+import { ProjectFilter } from "@/components/ProjectFilter";
+import { StatTile } from "@/components/StatTile";
+import { SkillGroup } from "@/components/SkillGroup";
+import { ContactBlock } from "@/components/ContactBlock";
 
 const EMAIL = "gahlottushar19@gmail.com";
-const PHONE = "+91 79764 66525";
-const PHONE_HREF = "+917976466525";
 const LINKEDIN = "https://www.linkedin.com/in/tush19/";
 const GITHUB = "https://github.com/tushu19";
 
@@ -14,14 +18,7 @@ const MAILTO = `mailto:${EMAIL}?subject=${encodeURIComponent(
   "Hi Tushar,\n\nWe'd like to speak with you about a role at [Company].\n\nRole: \nLocation: \nAbout the team: \n\nAre you open to a short call this week?\n\n— [Your name]"
 )}`;
 
-const domains = [
-  { key: "all",       label: "All" },
-  { key: "ai",        label: "AI / ML" },
-  { key: "backend",   label: "Backend" },
-  { key: "cloud",     label: "Cloud" },
-  { key: "fullstack", label: "Full-Stack" },
-] as const;
-type DomainKey = typeof domains[number]["key"];
+type DomainKey = "all" | "ai" | "backend" | "cloud" | "fullstack";
 
 const experience = [
   {
@@ -40,40 +37,38 @@ const experience = [
 
 const Index = () => {
   const [filter, setFilter] = useState<DomainKey>("all");
-  const [copied, setCopied] = useState<string | null>(null);
 
   useEffect(() => {
     document.title = "Tushar Gahlot — Software Engineer";
-    const desc =
-      "Tushar Gahlot — Software Engineer at SAP Labs. AI, backend, cloud and full-stack systems. Bangalore.";
-    let m = document.querySelector('meta[name="description"]');
-    if (!m) { m = document.createElement("meta"); m.setAttribute("name", "description"); document.head.appendChild(m); }
+    const desc = "Tushar Gahlot — Software Engineer at SAP Labs. AI, backend, cloud and full-stack systems. Bangalore.";
+    let m = document.querySelector('meta[name="description"]') as HTMLMetaElement | null;
+    if (!m) {
+      m = document.createElement("meta");
+      m.setAttribute("name", "description");
+      document.head.appendChild(m);
+    }
     m.setAttribute("content", desc);
   }, []);
-
-  const copy = async (val: string, key: string) => {
-    try {
-      await navigator.clipboard.writeText(val);
-      setCopied(key);
-      setTimeout(() => setCopied(null), 1600);
-    } catch { /* noop */ }
-  };
 
   const visibleProjects =
     filter === "all" ? projects : projects.filter((p) => p.universes.includes(filter));
 
-  // Merge all skills, dedup, keep order
-  const allSkills = Array.from(new Set(universes.flatMap((u) => u.skills)));
+  const skillGroups = [
+    { label: "Backend", skills: universes.find((u) => u.id === "backend")?.skills.slice(0, 6) ?? [] },
+    { label: "AI / ML", skills: universes.find((u) => u.id === "ai")?.skills.slice(0, 6) ?? [] },
+    { label: "Cloud", skills: universes.find((u) => u.id === "cloud")?.skills.slice(0, 6) ?? [] },
+    { label: "Full-Stack", skills: universes.find((u) => u.id === "fullstack")?.skills.slice(0, 6) ?? [] },
+  ];
 
   return (
-    <main className="min-h-screen bg-background text-foreground">
-      {/* Top bar */}
-      <header className="sticky top-0 z-30 backdrop-blur-md bg-background/70 border-b border-border/60">
-        <div className="container-narrow flex items-center justify-between h-14">
-          <a href="#top" className="font-serif text-lg tracking-tight">
-            Tushar Gahlot<span className="text-primary">.</span>
+    <main className="min-h-screen bg-[hsl(var(--background))] text-[hsl(var(--foreground))]">
+      {/* Nav */}
+      <header className="sticky top-0 z-30 backdrop-blur-xl bg-[hsl(var(--background)/0.75)] border-b border-[hsl(var(--tile-border))]">
+        <div className="container-bento flex items-center justify-between h-16">
+          <a href="#top" className="font-sora text-lg font-bold tracking-tight">
+            Tushar<span className="text-[hsl(var(--primary))]">.</span>
           </a>
-          <nav className="hidden sm:flex items-center gap-8 text-sm text-muted-foreground">
+          <nav className="hidden sm:flex items-center gap-8 text-sm font-medium text-[hsl(var(--muted-foreground))]">
             <a href="#work" className="link-underline">Work</a>
             <a href="#skills" className="link-underline">Skills</a>
             <a href="#experience" className="link-underline">Experience</a>
@@ -81,246 +76,161 @@ const Index = () => {
           </nav>
           <a
             href={MAILTO}
-            className="text-xs font-medium px-3.5 py-1.5 border border-primary/50 text-primary hover:bg-primary hover:text-primary-foreground transition-colors rounded-sm"
+            className="text-xs font-bold px-4 py-2 rounded-full border border-[hsl(var(--primary)/0.4)] text-[hsl(var(--primary))] hover:bg-[hsl(var(--primary))] hover:text-[hsl(var(--primary-foreground))] transition-all"
           >
             Get in touch
           </a>
         </div>
       </header>
 
-      {/* Hero */}
-      <section id="top" className="container-narrow pt-24 sm:pt-36 pb-24">
-        <p className="eyebrow mb-8 animate-fade-in">
-          <span className="inline-block w-1.5 h-1.5 rounded-full bg-emerald-400 mr-2 align-middle animate-pulse" />
-          Available for new opportunities
-        </p>
-        <h1 className="font-serif text-[clamp(2.5rem,7vw,5.5rem)] leading-[1.02] tracking-tight animate-fade-up">
-          Software engineer building <em className="text-primary not-italic italic-serif">quiet</em>,{" "}
-          production-grade systems at the intersection of{" "}
-          <em className="italic">AI, backend</em> and <em className="italic">cloud</em>.
-        </h1>
-        <p
-          className="mt-10 max-w-2xl text-lg text-muted-foreground leading-relaxed animate-fade-up"
-          style={{ animationDelay: "120ms" }}
-        >
-          Currently at <span className="text-foreground">SAP Labs, Bangalore</span> — shipping
-          GPT-4o verification engines, multi-tenant SaaS on SAP BTP, and the pipelines that keep
-          100+ microservices humming.
-        </p>
-
-        <div
-          className="mt-12 flex flex-wrap items-center gap-x-6 gap-y-3 text-sm text-muted-foreground animate-fade-up"
-          style={{ animationDelay: "220ms" }}
-        >
-          <span className="inline-flex items-center gap-2">
-            <MapPin className="w-3.5 h-3.5" /> Bangalore, IN
-          </span>
-          <a href={LINKEDIN} target="_blank" rel="noopener noreferrer" className="link-underline inline-flex items-center gap-2">
-            <Linkedin className="w-3.5 h-3.5" /> LinkedIn
-          </a>
-          <a href={GITHUB} target="_blank" rel="noopener noreferrer" className="link-underline inline-flex items-center gap-2">
-            <Github className="w-3.5 h-3.5" /> GitHub
-          </a>
-          <a href={MAILTO} className="link-underline inline-flex items-center gap-2">
-            <Mail className="w-3.5 h-3.5" /> Email
-          </a>
-        </div>
-      </section>
-
-      <div className="hair-divider" />
-
-      {/* Impact / stats */}
-      <section className="container-narrow py-20">
-        <p className="eyebrow mb-10">Impact in numbers</p>
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-10 md:gap-6">
-          {coreStats.map((s) => (
-            <div key={s.label} className="border-l border-border/70 pl-5">
-              <p className="font-serif text-4xl sm:text-5xl text-foreground leading-none">{s.value}</p>
-              <p className="mt-3 text-sm text-foreground">{s.label}</p>
-              <p className="mt-1 text-xs text-muted-foreground">{s.sub}</p>
-            </div>
-          ))}
-        </div>
-      </section>
-
-      <div className="hair-divider" />
-
-      {/* Featured Work */}
-      <section id="work" className="container-narrow py-24">
-        <div className="flex items-end justify-between mb-10 flex-wrap gap-6">
-          <div>
-            <p className="eyebrow mb-3">Selected work</p>
-            <h2 className="font-serif text-4xl sm:text-5xl">Things I've shipped.</h2>
-          </div>
-          <div className="flex flex-wrap gap-2">
-            {domains.map((d) => (
-              <button
-                key={d.key}
-                onClick={() => setFilter(d.key)}
-                className={`text-xs px-3 py-1.5 border rounded-sm transition-colors ${
-                  filter === d.key
-                    ? "border-primary text-primary bg-primary/5"
-                    : "border-border text-muted-foreground hover:text-foreground hover:border-foreground/40"
-                }`}
-              >
-                {d.label}
-              </button>
-            ))}
-          </div>
-        </div>
-
-        <div className="divide-y divide-border/60 border-y border-border/60">
-          {visibleProjects.map((p, i) => (
-            <article
-              key={p.title}
-              className="group grid grid-cols-12 gap-6 py-8 hover:bg-secondary/30 transition-colors px-2 -mx-2"
-            >
-              <div className="col-span-12 md:col-span-1 font-mono text-xs text-muted-foreground pt-1.5">
-                {String(i + 1).padStart(2, "0")}
+      <div id="top" className="container-bento py-8 sm:py-12">
+        {/* Bento Grid */}
+        <div className="grid grid-cols-1 md:grid-cols-12 gap-4 auto-rows-min">
+          {/* 01 Hero */}
+          <BentoCard className="md:col-span-8 flex flex-col justify-between min-h-[320px]" number="01" delay={0}>
+            <div className="flex justify-between items-start">
+              <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-[hsl(var(--primary)/0.10)] border border-[hsl(var(--primary)/0.25)]">
+                <span className="relative flex h-2 w-2">
+                  <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[hsl(var(--primary))] opacity-75" />
+                  <span className="relative inline-flex rounded-full h-2 w-2 bg-[hsl(var(--primary))]" />
+                </span>
+                <span className="text-[hsl(var(--primary))] text-[10px] font-bold uppercase tracking-wider">Available for new opportunities</span>
               </div>
-              <div className="col-span-12 md:col-span-7">
-                <h3 className="font-serif text-2xl sm:text-3xl leading-tight flex items-start gap-3">
-                  <span>{p.title}</span>
-                  <ArrowUpRight className="w-5 h-5 text-muted-foreground shrink-0 mt-2 transition-all group-hover:text-primary group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
-                </h3>
-                <p className="mt-3 text-muted-foreground leading-relaxed max-w-xl">{p.blurb}</p>
-                <div className="mt-4 flex flex-wrap gap-x-3 gap-y-1 font-mono text-[11px] text-muted-foreground">
-                  {p.stack.map((s) => (
-                    <span key={s}>{s}</span>
-                  ))}
+            </div>
+            <div className="mt-8">
+              <h1 className="font-sora text-4xl sm:text-5xl lg:text-6xl font-extrabold tracking-tight text-[hsl(var(--foreground))]">
+                Tushar Gahlot
+              </h1>
+              <p className="mt-4 text-lg sm:text-xl text-[hsl(var(--muted-foreground))] max-w-lg leading-relaxed">
+                Software Engineer at SAP Labs, Bangalore — building production-grade systems across AI, backend, and cloud.
+              </p>
+              <div className="mt-6 flex flex-wrap items-center gap-x-5 gap-y-2 text-sm text-[hsl(var(--muted-foreground))]">
+                <span className="inline-flex items-center gap-2">
+                  <MapPin className="h-3.5 w-3.5" /> Bangalore, IN
+                </span>
+                <a href={LINKEDIN} target="_blank" rel="noopener noreferrer" className="link-underline inline-flex items-center gap-2">
+                  <Linkedin className="h-3.5 w-3.5" /> LinkedIn
+                </a>
+                <a href={GITHUB} target="_blank" rel="noopener noreferrer" className="link-underline inline-flex items-center gap-2">
+                  <Github className="h-3.5 w-3.5" /> GitHub
+                </a>
+                <a href={MAILTO} className="link-underline inline-flex items-center gap-2">
+                  <Mail className="h-3.5 w-3.5" /> Email
+                </a>
+              </div>
+            </div>
+          </BentoCard>
+
+          {/* 02 Impact */}
+          <BentoCard className="md:col-span-4" number="02" delay={0.1}>
+            <div className="h-full flex flex-col">
+              <h2 className="text-sm font-bold text-[hsl(var(--foreground))] mb-4">Impact in numbers</h2>
+              <div className="grid grid-cols-2 gap-3 flex-1">
+                {coreStats.map((s) => (
+                  <StatTile key={s.label} value={s.value} label={s.label} sub={s.sub} />
+                ))}
+              </div>
+            </div>
+          </BentoCard>
+
+          {/* 03 Skills */}
+          <BentoCard id="skills" className="md:col-span-4" number="03" delay={0.2}>
+            <h2 className="text-sm font-bold text-[hsl(var(--foreground))] mb-6">Core skills</h2>
+            <div className="space-y-5">
+              {skillGroups.map((g) => (
+                <SkillGroup key={g.label} label={g.label} skills={g.skills} />
+              ))}
+            </div>
+          </BentoCard>
+
+          {/* 04 Selected Work */}
+          <BentoCard id="work" className="md:col-span-8" number="04" delay={0.25}>
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
+              <h2 className="text-sm font-bold text-[hsl(var(--foreground))]">Selected work</h2>
+              <ProjectFilter filter={filter} onChange={setFilter} />
+            </div>
+            <div className="space-y-3">
+              <AnimatePresence mode="popLayout">
+                {visibleProjects.map((p) => (
+                  <motion.article
+                    key={p.title}
+                    layout
+                    initial={{ opacity: 0, scale: 0.98 }}
+                    animate={{ opacity: 1, scale: 1 }}
+                    exit={{ opacity: 0, scale: 0.98 }}
+                    transition={{ duration: 0.3, ease: [0.16, 1, 0.3, 1] }}
+                    className="group relative rounded-2xl border border-[hsl(var(--tile-border))] bg-[hsl(var(--background)/0.50)] p-4 transition-colors hover:border-[hsl(var(--primary)/0.25)] hover:bg-[hsl(var(--tile))]"
+                  >
+                    <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-4">
+                      <div className="flex-1 min-w-0">
+                        <h3 className="font-sora text-lg font-bold text-[hsl(var(--foreground))] flex items-center gap-2">
+                          <span>{p.title}</span>
+                          <ArrowUpRight className="h-4 w-4 text-[hsl(var(--muted-foreground))] transition-all group-hover:text-[hsl(var(--primary))] group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
+                        </h3>
+                        <p className="mt-1.5 text-sm text-[hsl(var(--muted-foreground))] leading-relaxed">
+                          {p.blurb}
+                        </p>
+                        <div className="mt-3 flex flex-wrap gap-x-3 gap-y-1 font-mono text-[10px] text-[hsl(var(--muted-foreground))]">
+                          {p.stack.map((s) => (
+                            <span key={s} className="text-[hsl(var(--primary))]">{s}</span>
+                          ))}
+                        </div>
+                      </div>
+                      <div className="flex flex-col gap-1 sm:text-right shrink-0">
+                        {p.metrics.map((m) => (
+                          <span key={m} className="text-xs font-mono text-[hsl(var(--foreground))]">
+                            {m}
+                          </span>
+                        ))}
+                      </div>
+                    </div>
+                  </motion.article>
+                ))}
+              </AnimatePresence>
+            </div>
+          </BentoCard>
+
+          {/* 05 Experience */}
+          <BentoCard id="experience" className="md:col-span-7" number="05" delay={0.3}>
+            <h2 className="text-sm font-bold text-[hsl(var(--foreground))] mb-6">Career path</h2>
+            <div className="space-y-8">
+              {experience.map((e) => (
+                <div key={e.role} className="grid grid-cols-1 sm:grid-cols-12 gap-4">
+                  <div className="sm:col-span-4">
+                    <p className="font-mono text-[10px] uppercase tracking-wider text-[hsl(var(--primary))]">{e.period}</p>
+                    <h3 className="font-sora text-xl font-bold text-[hsl(var(--foreground))] mt-1">{e.org}</h3>
+                    <p className="text-sm text-[hsl(var(--muted-foreground))]">{e.place}</p>
+                  </div>
+                  <div className="sm:col-span-8">
+                    <p className="text-base font-semibold text-[hsl(var(--foreground))] mb-3">{e.role}</p>
+                    <ul className="space-y-2.5 text-sm text-[hsl(var(--muted-foreground))] leading-relaxed">
+                      {e.points.map((pt) => (
+                        <li key={pt} className="flex gap-3">
+                          <span className="text-[hsl(var(--primary))] mt-1.5 shrink-0">—</span>
+                          <span>{pt}</span>
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
                 </div>
-              </div>
-              <div className="col-span-12 md:col-span-4 flex flex-col gap-2 md:items-end md:text-right">
-                {p.metrics.map((m) => (
-                  <span key={m} className="text-xs text-foreground/80 font-mono">
-                    {m}
-                  </span>
-                ))}
-              </div>
-            </article>
-          ))}
-        </div>
-      </section>
-
-      <div className="hair-divider" />
-
-      {/* Skills */}
-      <section id="skills" className="container-narrow py-24">
-        <p className="eyebrow mb-3">The toolkit</p>
-        <h2 className="font-serif text-4xl sm:text-5xl mb-10">Skills, without the buzzwords.</h2>
-        <div className="grid md:grid-cols-4 gap-10">
-          {universes.map((u) => (
-            <div key={u.id}>
-              <h3 className="font-serif text-xl mb-4 text-primary">{u.name.replace(" Universe", "")}</h3>
-              <ul className="space-y-1.5 text-sm text-muted-foreground">
-                {u.skills.slice(0, 8).map((s) => (
-                  <li key={s} className="hover:text-foreground transition-colors">{s}</li>
-                ))}
-              </ul>
+              ))}
             </div>
-          ))}
+          </BentoCard>
+
+          {/* 06 Contact */}
+          <BentoCard id="contact" className="md:col-span-5" number="06" delay={0.35}>
+            <ContactBlock />
+          </BentoCard>
         </div>
-        <div className="mt-12 pt-8 border-t border-border/60">
-          <p className="eyebrow mb-4">Also fluent in</p>
-          <p className="font-mono text-xs text-muted-foreground leading-relaxed">
-            {allSkills.slice(0, 30).join("  ·  ")}
-          </p>
-        </div>
-      </section>
-
-      <div className="hair-divider" />
-
-      {/* Experience */}
-      <section id="experience" className="container-narrow py-24">
-        <p className="eyebrow mb-3">Path so far</p>
-        <h2 className="font-serif text-4xl sm:text-5xl mb-12">Experience.</h2>
-        <div className="space-y-12">
-          {experience.map((e) => (
-            <div key={e.role} className="grid grid-cols-12 gap-6">
-              <div className="col-span-12 md:col-span-4">
-                <p className="font-mono text-xs text-muted-foreground">{e.period}</p>
-                <h3 className="font-serif text-2xl mt-2">{e.org}</h3>
-                <p className="text-sm text-muted-foreground">{e.place}</p>
-              </div>
-              <div className="col-span-12 md:col-span-8">
-                <p className="text-lg text-foreground mb-4">{e.role}</p>
-                <ul className="space-y-2.5 text-muted-foreground leading-relaxed">
-                  {e.points.map((pt) => (
-                    <li key={pt} className="flex gap-3">
-                      <span className="text-primary mt-2 shrink-0">—</span>
-                      <span>{pt}</span>
-                    </li>
-                  ))}
-                </ul>
-              </div>
-            </div>
-          ))}
-        </div>
-      </section>
-
-      <div className="hair-divider" />
-
-      {/* Contact */}
-      <section id="contact" className="container-narrow py-28">
-        <p className="eyebrow mb-3">Say hello</p>
-        <h2 className="font-serif text-5xl sm:text-7xl leading-[1.02] mb-8">
-          Let's build something{" "}
-          <em className="text-primary not-italic">worth shipping</em>.
-        </h2>
-        <p className="text-lg text-muted-foreground max-w-xl mb-10">
-          The fastest way to reach me is email — one click, subject pre-filled, no forms.
-        </p>
-
-        <a
-          href={MAILTO}
-          className="group inline-flex items-center gap-3 bg-primary text-primary-foreground px-6 py-3.5 rounded-sm font-medium hover:bg-primary/90 transition-colors"
-        >
-          <Mail className="w-4 h-4" />
-          Email Tushar
-          <ArrowUpRight className="w-4 h-4 transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
-        </a>
-
-        <div className="mt-16 grid sm:grid-cols-2 gap-x-10 gap-y-6 max-w-2xl">
-          <ContactRow
-            icon={<Mail className="w-4 h-4" />}
-            label="Email"
-            value={EMAIL}
-            href={`mailto:${EMAIL}`}
-            onCopy={() => copy(EMAIL, "email")}
-            copied={copied === "email"}
-          />
-          <ContactRow
-            icon={<Phone className="w-4 h-4" />}
-            label="Phone"
-            value={PHONE}
-            href={`tel:${PHONE_HREF}`}
-            onCopy={() => copy(PHONE_HREF, "phone")}
-            copied={copied === "phone"}
-          />
-          <ContactRow
-            icon={<Linkedin className="w-4 h-4" />}
-            label="LinkedIn"
-            value="in/tush19"
-            href={LINKEDIN}
-            external
-          />
-          <ContactRow
-            icon={<Github className="w-4 h-4" />}
-            label="GitHub"
-            value="tushu19"
-            href={GITHUB}
-            external
-          />
-        </div>
-      </section>
+      </div>
 
       {/* Footer */}
-      <footer className="border-t border-border/60">
-        <div className="container-narrow py-10 flex flex-wrap items-center justify-between gap-4">
-          <p className="font-mono text-[10px] uppercase tracking-[0.25em] text-muted-foreground">
+      <footer className="border-t border-[hsl(var(--tile-border))] mt-8">
+        <div className="container-bento py-8 flex flex-wrap items-center justify-between gap-4">
+          <p className="font-mono text-[10px] uppercase tracking-[0.25em] text-[hsl(var(--muted-foreground))]">
             © {new Date().getFullYear()} Tushar Gahlot · Bangalore
           </p>
-          <p className="font-mono text-[10px] uppercase tracking-[0.25em] text-muted-foreground">
+          <p className="font-mono text-[10px] uppercase tracking-[0.25em] text-[hsl(var(--muted-foreground))]">
             Designed &amp; built from scratch
           </p>
         </div>
@@ -328,39 +238,5 @@ const Index = () => {
     </main>
   );
 };
-
-interface RowProps {
-  icon: React.ReactNode;
-  label: string;
-  value: string;
-  href: string;
-  external?: boolean;
-  onCopy?: () => void;
-  copied?: boolean;
-}
-const ContactRow = ({ icon, label, value, href, external, onCopy, copied }: RowProps) => (
-  <div className="flex items-center justify-between gap-4 border-b border-border/60 pb-3">
-    <div className="min-w-0">
-      <p className="eyebrow mb-1.5 flex items-center gap-2">{icon}{label}</p>
-      <a
-        href={href}
-        target={external ? "_blank" : undefined}
-        rel={external ? "noopener noreferrer" : undefined}
-        className="link-underline text-sm text-foreground truncate block"
-      >
-        {value}
-      </a>
-    </div>
-    {onCopy && (
-      <button
-        onClick={onCopy}
-        aria-label={`Copy ${label}`}
-        className="shrink-0 text-muted-foreground hover:text-primary transition-colors"
-      >
-        {copied ? <Check className="w-4 h-4 text-primary" /> : <Copy className="w-4 h-4" />}
-      </button>
-    )}
-  </div>
-);
 
 export default Index;
