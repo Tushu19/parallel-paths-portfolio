@@ -1,84 +1,95 @@
-## Goal
-Transform the current flat, text-heavy editorial portfolio into a calm but characterful bento-grid landing page using the **Ocean Deep** palette and **Sora + Manrope** typography. Every existing section (hero, stats, projects, skills, experience, contact) is preserved, but chunked into scannable tiles with ambient motion and clear hierarchy.
 
-## Design locks
-- **Palette:** `#0c2340` (deep navy background), `#1a4a6e` (card surface), `#2d8a9e` (mid accent), `#5cbdb9` (bright teal accent) — mapped to HSL CSS variables.
-- **Typography:** `Sora` for headings, `Manrope` for body, `JetBrains Mono` for stats/labels/tech tags.
-- **Layout:** responsive 12-column bento grid: large hero tile, impact stats tile, grouped skills tile, project list tile, experience timeline tile, contact CTA tile.
-- **Shape language:** large rounded-3xl tiles, 1px subtle borders, numbered tile badges, soft inner glows.
+# The Time Traveler — Portfolio Plan
 
-## Plan
+A single-page, recruiter-first portfolio framed as a journey through Tushar's career timeline. Content stays scannable in 30 seconds; the "time" theme adds character without hiding information.
 
-### 1. Design tokens & typography
-- Update `src/index.css` to set the Ocean Deep HSL palette and import `Sora`, `Manrope`.
-- Update `tailwind.config.ts` to register `font-sora` and `font-manrope`.
-- Add CSS variables for the bento card surface, accent glow, and tile border color.
+## Concept
 
-### 2. Data model
-- Reuse `src/data/universes.ts` for projects, skills, stats, and experience.
-- Keep the project filter state (All / AI / Backend / Cloud / Full-Stack).
-- Keep the one-click `mailto:` link with pre-filled subject/body.
+You are the traveler. The page is a **chrono-log**: past → present → future. A persistent **Time Dial** on the side lets recruiters jump between eras (Origin, Ascent, Present, Horizon). No hidden content, no forced interactions — the dial is a gimmick, not a gate.
 
-### 3. Page layout (`src/pages/Index.tsx`)
-Replace the single long column with a single-page bento grid:
+## Visual Direction
+
+- **Palette**: Deep midnight navy `#0a0e1a` background, warm parchment `#e8dcc4` text, brass/amber accent `#d4a24c`, faint cyan glow `#6ec5d4` for "active timeline" highlights. Feels like an antique chronometer meets sci-fi HUD.
+- **Typography**: `Instrument Serif` for display (elegant, timeless) + `JetBrains Mono` for timestamps/coordinates + `Inter` for body. Serif gives the "traveler's journal" feel; mono gives the "time machine readout" feel.
+- **Texture**: Subtle film-grain overlay, faint concentric-circle chronometer rings behind the hero, gold hairline dividers.
+- **Motion**: Content fades in with a soft "temporal blur" (blur + opacity) as you scroll. The Time Dial ticks. Section transitions have a brief scanline sweep.
+
+## Layout (single page, top → bottom)
 
 ```text
-[Sticky nav: name + links + "Get in touch"]
-
-Bento grid (max-w-6xl, 12 cols, gap-4):
-┌──────────────────────┬─────────────┐
-│ 01 Hero              │ 02 Impact  │
-│ (8 cols)             │ (4 cols)   │
-├────────────┬─────────┴────────────┤
-│ 03 Skills  │ 04 Selected Work     │
-│ (4 cols)   │ (8 cols)             │
-├──────────────────────┬─────────────┤
-│ 05 Career Path       │ 06 Contact  │
-│ (7 cols)             │ (5 cols)   │
-└──────────────────────┴─────────────┘
-
-[Footer]
+┌────────────────────────────────────────────────┐
+│ [Chrono-Log 2026.11]        [◐ Time Dial]     │
+│                                                │
+│   TUSHAR GAHLOT                                │
+│   Traveler across backend, AI, and cloud.      │
+│   Currently: SAP Labs · Bangalore              │
+│   [ Send transmission → ] [ LinkedIn ] [ GH ]  │
+│                                                │
+│   ── chronometer rings, avatar orb ──          │
+├────────────────────────────────────────────────┤
+│ COORDINATES  (impact stats in a row)           │
+│  99.85% ↓ time   100+ services   6 patents...  │
+├────────────────────────────────────────────────┤
+│ THE TIMELINE                                   │
+│  ● 2020 — Origin: first commits, foundations   │
+│  ● 2022 — Ascent: SAP Labs, scale              │
+│  ● 2024 — Breakthrough: AI systems in prod     │
+│  ● 2026 — Present: architect + AI              │
+│  ○ Horizon — where I'm heading                 │
+│  (vertical spine with era cards on alternating │
+│   sides; each card = role + 2-3 highlights)    │
+├────────────────────────────────────────────────┤
+│ ARTIFACTS  (projects, filterable)              │
+│  [ All | Backend | AI | Cloud ]                │
+│  Card grid — each card: title, era stamp,      │
+│  stack chips, one-line impact, metric badge.   │
+├────────────────────────────────────────────────┤
+│ INSTRUMENTS  (skills grouped by domain)        │
+│  Backend · AI/ML · Cloud · Tools               │
+│  Compact chip clusters, no clutter.            │
+├────────────────────────────────────────────────┤
+│ TRANSMISSION  (contact)                        │
+│  Big "Open a channel" mailto CTA               │
+│  Email · Phone · LinkedIn · GitHub (all copy)  │
+└────────────────────────────────────────────────┘
 ```
 
-Tile contents:
-- **01 Hero:** availability badge, name, tagline, quick links (LinkedIn, GitHub, Email, Location).
-- **02 Impact:** 2–4 key stats in teal-on-navy or navy-on-teal blocks.
-- **03 Skills:** grouped by domain (Frontend/Backend/DevOps/AI) with tech tags.
-- **04 Selected Work:** domain filter pills, then project rows with title, blurb, stack, metrics.
-- **05 Career Path:** SAP Labs experience with period and bullet points.
-- **06 Contact:** heading, subtext, "Email Tushar" button, copyable email/phone rows.
+## The Gimmick — Time Dial (subtle, optional)
 
-### 4. Components to create
-- `src/components/BentoCard.tsx`: consistent tile wrapper with border, glow, hover state, and optional number badge.
-- `src/components/ProjectFilter.tsx`: pill filter for project domains.
-- `src/components/StatTile.tsx`: large number + label.
-- `src/components/SkillGroup.tsx`: domain label + comma-separated skills.
-- `src/components/ContactBlock.tsx`: email CTA + copy rows.
+A small fixed dial on the right edge (desktop) / bottom (mobile) with 4 era markers. Clicking smooth-scrolls to that era and briefly "rewinds" the section with a scanline + hue shift. Keyboard `←/→` also cycles. **All content is visible without touching it** — recruiters can just scroll.
 
-### 5. Motion & interactions
-- Use `framer-motion` for:
-  - staggered tile reveal on load (fade + translateY),
-  - subtle hover lift/glow on tiles,
-  - smooth project filter rearrangement.
-- Add a slow ambient teal gradient sweep on the hero tile background.
-- Keep the cursor trail but recolor it to match the teal accent (or disable if it clashes).
-- Respect `prefers-reduced-motion`.
+Bonus micro-touch: header shows a live "Chrono-Log 2026.11.20 · 14:32 IST" readout that ticks every second.
 
-### 6. Responsive behavior
-- Mobile: single-column stack, tiles become full-width, stats tile collapses into a 2x2 grid, project rows become vertical cards.
-- Tablet: 6-column grid.
-- Desktop: 12-column bento as designed.
+## Recruiter Guardrails
 
-### 7. SEO / meta
-- Update `index.html` title and description to match the new tone.
-- Ensure OpenGraph / Twitter card tags match.
+- Hero states name, role, location, availability, and CTA within the first viewport.
+- Impact numbers appear immediately after hero — no scroll hunt.
+- Projects are a scannable grid, not a story to unlock.
+- Contact is one click (`mailto:` with pre-filled subject/body) — unchanged from current.
+- All text uses `text-balance`/`text-pretty` and tested line-lengths so nothing overflows on 1024px, 1280px, 1440px, and mobile.
 
-### 8. Cleanup
-- Remove unused imports and components from the previous editorial version (ParticleField, Portal, etc.).
-- Keep files like `PortalHub.tsx` only if they are no longer imported; otherwise delete or archive them.
+## Technical Plan
 
-### 9. Verification
-- Run `bun run build` or `vite build` to confirm no errors.
-- Check responsive breakpoints at 375px, 768px, 1440px.
-- Confirm all hyperlinks work (mailto pre-filled, LinkedIn, GitHub, phone).
-- Confirm the one-click email copy and mailto CTA function as before.
+1. **Tokens** — rewrite `src/index.css` palette + fonts (Instrument Serif, JetBrains Mono, Inter). Update `tailwind.config.ts` font families.
+2. **New components**
+   - `ChronoHeader.tsx` — top bar with live chrono readout.
+   - `TimeDial.tsx` — fixed side dial, 4 era markers, click + keyboard nav, active-era highlight based on scroll position (IntersectionObserver).
+   - `EraCard.tsx` — timeline entry (year, role, 2-3 bullets, era color accent).
+   - `TimelineSpine.tsx` — vertical line + alternating era cards.
+   - `ArtifactCard.tsx` — project card with era stamp + metric badge.
+   - `InstrumentPanel.tsx` — grouped skill chips.
+   - `TransmissionBlock.tsx` — reworked contact section on-theme.
+   - `ChronometerRings.tsx` — SVG concentric rings behind hero.
+   - `GrainOverlay.tsx` — subtle film-grain layer.
+3. **Rewrite** `src/pages/Index.tsx` to compose the sections above.
+4. **Cursor trail** — retune to warm amber `#d4a24c` at low opacity to fit theme.
+5. **Motion** — framer-motion fade+blur on scroll, dial tick animation, scanline sweep on era jump.
+6. **Text-fit audit** — explicit `max-w-*`, `text-balance`, responsive font sizes (clamp), and manual check at 375 / 768 / 1024 / 1440 widths.
+7. **SEO** — update `index.html` title/description to match the new framing.
+8. **Cleanup** — remove now-unused bento components (`BentoCard`, `StatTile`, `ProjectFilter`, `SkillGroup`, `ContactBlock`) once new ones land.
+
+## Out of Scope
+
+- No actual mini-game (kept as gimmick only, per your priority on recruiter-first).
+- No routing changes — stays single-page scroll.
+- Music toggle stays removed.
