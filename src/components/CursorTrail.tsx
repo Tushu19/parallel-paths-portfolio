@@ -3,116 +3,117 @@ import { useEffect, useRef } from 'react';
 interface Particle {
   x: number;
   y: number;
-  timestamp: number;
-  id: number;
+  life: number; // 1 -> 0
+  size: number;
 }
 
 export const CursorTrail = () => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const particlesRef = useRef<Particle[]>([]);
-  const lastPosRef = useRef({ x: 0, y: 0 });
-  const particleIdRef = useRef(0);
+  const mouseRef = useRef({ x: -100, y: -100, hasMoved: false });
+  const lastEmitRef = useRef({ x: -100, y: -100 });
 
   useEffect(() => {
     const canvas = canvasRef.current;
     if (!canvas) return;
-
     const ctx = canvas.getContext('2d');
     if (!ctx) return;
 
-    // Set canvas size
-    const resizeCanvas = () => {
-      canvas.width = window.innerWidth;
-      canvas.height = window.innerHeight;
+    const dpr = Math.min(window.devicePixelRatio || 1, 2);
+    const resize = () => {
+      canvas.width = window.innerWidth * dpr;
+      canvas.height = window.innerHeight * dpr;
+      canvas.style.width = window.innerWidth + 'px';
+      canvas.style.height = window.innerHeight + 'px';
+      ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
     };
-    resizeCanvas();
-    window.addEventListener('resize', resizeCanvas);
+    resize();
+    window.addEventListener('resize', resize);
 
-    // Track mouse movement
-    const handleMouseMove = (e: MouseEvent) => {
-      const { clientX, clientY } = e;
-      const lastPos = lastPosRef.current;
-      
-      // Calculate distance moved
-      const dx = clientX - lastPos.x;
-      const dy = clientY - lastPos.y;
-      const distance = Math.sqrt(dx * dx + dy * dy);
+    const onMove = (e: MouseEvent) => {
+      mouseRef.current.x = e.clientX;
+      mouseRef.current.y = e.clientY;
+      if (!mouseRef.current.hasMoved) {
+        mouseRef.current.hasMoved = true;
+        lastEmitRef.current.x = e.clientX;
+        lastEmitRef.current.y = e.clientY;
+      }
+    };
+    window.addEventListener('mousemove', onMove, { passive: true });
 
-      // Only add particles on fast movement (threshold: 5 pixels)
-      if (distance > 5) {
-        particlesRef.current.push({
-          x: clientX,
-          y: clientY,
-          timestamp: Date.now(),
-          id: particleIdRef.current++
-        });
-
-        // Keep only last 8 particles
-        if (particlesRef.current.length > 8) {
-          particlesRef.current.shift();
+    let rafId = 0;
+    const animate = () => {
+      // Emit interpolated particles between last emit and current mouse for smoothness
+      if (mouseRef.current.hasMoved) {
+        const mx = mouseRef.current.x;
+        const my = mouseRef.current.y;
+        const lx = lastEmitRef.current.x;
+        const ly = lastEmitRef.current.y;
+        const dx = mx - lx;
+        const dy = my - ly;
+        const dist = Math.hypot(dx, dy);
+        const spacing = 4; // px between emitted particles
+        if (dist > spacing) {
+          const steps = Math.min(Math.floor(dist / spacing), 12);
+          for (let i = 1; i <= steps; i++) {
+            const t = i / steps;
+            particlesRef.current.push({
+              x: lx + dx * t + (Math.random() - 0.5) * 1.5,
+              y: ly + dy * t + (Math.random() - 0.5) * 1.5,
+              life: 1,
+              size: 3 + Math.random() * 2,
+            });
+          }
+          lastEmitRef.current.x = mx;
+          lastEmitRef.current.y = my;
         }
       }
 
-      lastPosRef.current = { x: clientX, y: clientY };
-    };
+      // Cap total particles
+      if (particlesRef.current.length > 120) {
+        particlesRef.current.splice(0, particlesRef.current.length - 120);
+      }
 
-    window.addEventListener('mousemove', handleMouseMove);
-
-    // Animation loop
-    const animate = () => {
       ctx.clearRect(0, 0, canvas.width, canvas.height);
-      
-      const now = Date.now();
-      const maxAge = 500; // Particles fade out after 500ms
 
-      // Remove old particles
-      particlesRef.current = particlesRef.current.filter(
-        p => now - p.timestamp < maxAge
-      );
-
-      // Draw particles
-      particlesRef.current.forEach((particle, index) => {
-        const age = now - particle.timestamp;
-        const life = 1 - age / maxAge; // 1 to 0
-
-        // Size decreases over time
-        const size = 4 * life;
-        
-        // Opacity fades out
-        const opacity = life * 0.8;
-
-        // Create gradient for cosmic effect
-        const gradient = ctx.createRadialGradient(
-          particle.x, particle.y, 0,
-          particle.x, particle.y, size * 3
-        );
-        
-        // Cosmic colors (purple to blue to cyan)
-        const hue = 200 + (index * 20) % 80; // Varies between 200-280
-        gradient.addColorStop(0, `hsla(${hue}, 90%, 70%, ${opacity})`);
-        gradient.addColorStop(0.5, `hsla(${hue}, 80%, 60%, ${opacity * 0.5})`);
-        gradient.addColorStop(1, `hsla(${hue}, 70%, 50%, 0)`);
-
-        ctx.fillStyle = gradient;
-        ctx.beginPath();
-        ctx.arc(particle.x, particle.y, size * 3, 0, Math.PI * 2);
-        ctx.fill();
-
-        // Inner bright core
-        ctx.fillStyle = `hsla(${hue}, 100%, 90%, ${opacity * 0.8})`;
-        ctx.beginPath();
-        ctx.arc(particle.x, particle.y, size, 0, Math.PI * 2);
-        ctx.fill();
+      const decay = 0.045; // smooth fade
+      particlesRef.current.forEach((p) => {
+        p.life -= decay;
       });
+      particlesRef.current = particlesRef.current.filter((p) => p.life > 0);
 
-      requestAnimationFrame(animate);
+      ctx.globalCompositeOperation = 'lighter';
+      for (const p of particlesRef.current) {
+        const life = p.life;
+        const size = p.size * life;
+        const opacity = life;
+
+        // Soft outer white glow
+        const grad = ctx.createRadialGradient(p.x, p.y, 0, p.x, p.y, size * 4);
+        grad.addColorStop(0, `rgba(255,255,255,${opacity * 0.55})`);
+        grad.addColorStop(0.4, `rgba(255,255,255,${opacity * 0.2})`);
+        grad.addColorStop(1, 'rgba(255,255,255,0)');
+        ctx.fillStyle = grad;
+        ctx.beginPath();
+        ctx.arc(p.x, p.y, size * 4, 0, Math.PI * 2);
+        ctx.fill();
+
+        // Bright white core
+        ctx.fillStyle = `rgba(255,255,255,${opacity})`;
+        ctx.beginPath();
+        ctx.arc(p.x, p.y, size * 0.9, 0, Math.PI * 2);
+        ctx.fill();
+      }
+      ctx.globalCompositeOperation = 'source-over';
+
+      rafId = requestAnimationFrame(animate);
     };
-
-    animate();
+    rafId = requestAnimationFrame(animate);
 
     return () => {
-      window.removeEventListener('resize', resizeCanvas);
-      window.removeEventListener('mousemove', handleMouseMove);
+      cancelAnimationFrame(rafId);
+      window.removeEventListener('resize', resize);
+      window.removeEventListener('mousemove', onMove);
     };
   }, []);
 
@@ -120,7 +121,6 @@ export const CursorTrail = () => {
     <canvas
       ref={canvasRef}
       className="fixed inset-0 pointer-events-none z-[9999]"
-      style={{ mixBlendMode: 'screen' }}
     />
   );
 };
