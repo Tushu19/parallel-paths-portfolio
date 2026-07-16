@@ -88,18 +88,18 @@ export const CursorTrail = () => {
         const size = p.size * life;
         const opacity = life;
 
-        // Soft outer white glow
+        // Soft outer teal glow (Ocean Deep accent #5cbdb9)
         const grad = ctx.createRadialGradient(p.x, p.y, 0, p.x, p.y, size * 4);
-        grad.addColorStop(0, `rgba(255,255,255,${opacity * 0.55})`);
-        grad.addColorStop(0.4, `rgba(255,255,255,${opacity * 0.2})`);
-        grad.addColorStop(1, 'rgba(255,255,255,0)');
+        grad.addColorStop(0, `rgba(92,189,185,${opacity * 0.55})`);
+        grad.addColorStop(0.4, `rgba(92,189,185,${opacity * 0.2})`);
+        grad.addColorStop(1, 'rgba(92,189,185,0)');
         ctx.fillStyle = grad;
         ctx.beginPath();
         ctx.arc(p.x, p.y, size * 4, 0, Math.PI * 2);
         ctx.fill();
 
-        // Bright white core
-        ctx.fillStyle = `rgba(255,255,255,${opacity})`;
+        // Bright teal core
+        ctx.fillStyle = `rgba(92,189,185,${opacity})`;
         ctx.beginPath();
         ctx.arc(p.x, p.y, size * 0.9, 0, Math.PI * 2);
         ctx.fill();
