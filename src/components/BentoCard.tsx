@@ -1,12 +1,13 @@
 import { motion } from "framer-motion";
 import { cn } from "@/lib/utils";
 
-interface BentoCardProps extends React.HTMLAttributes<HTMLDivElement> {
+interface BentoCardProps {
   children: React.ReactNode;
   className?: string;
   number?: string;
   delay?: number;
   glow?: boolean;
+  id?: string;
 }
 
 export const BentoCard = ({
@@ -15,10 +16,11 @@ export const BentoCard = ({
   number,
   delay = 0,
   glow = true,
-  ...props
+  id,
 }: BentoCardProps) => {
   return (
     <motion.div
+      id={id}
       initial={{ opacity: 0, y: 24 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{
@@ -33,7 +35,6 @@ export const BentoCard = ({
         glow && "shadow-[0_0_0_1px_hsl(var(--tile-border))]",
         className
       )}
-      {...props}
     >
       {glow && (
         <div className="pointer-events-none absolute -bottom-16 -right-16 h-40 w-40 rounded-full bg-[hsl(var(--primary)/0.06)] blur-3xl" />
